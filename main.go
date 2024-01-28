@@ -6,12 +6,34 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path/filepath"
 	S "strings"
 )
 
 type Email struct {
 	Headers map[string]string `json:"headers"`
 	Body    string            `json:"body"`
+}
+
+func explore_dir() {
+	dir, err := os.Getwd()
+	if err != nil {
+		fmt.Println("Error getting current working directory:", err)
+		return
+	}
+
+	//fmt.Println(dir)
+	err = filepath.Walk(dir+"/enron_mail_20110402/maildir", func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+		explore_file(path)
+		return nil
+	})
+
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 func explore_file(path string) {
@@ -32,19 +54,19 @@ func explore_file(path string) {
 		line := scanner.Text()
 		for i, header := range email_headers {
 			if S.HasPrefix(line, header) {
-				fmt.Println(line)
+				//fmt.Println(line)
 				temp = append(temp[:i], temp[i+1:]...)
 				if S.HasPrefix(line, "X-FileName:") {
 					storeContent = true
-				} else {
-					storeContent = false
 				}
 				headers[header] = line[len(header):]
 				break
 			}
 		}
 		if storeContent {
-			body += line + "\n"
+			if !S.HasPrefix(line, "X-FileName:") {
+				body += line + "\n"
+			}
 		}
 	}
 
@@ -63,6 +85,10 @@ func explore_file(path string) {
 	}
 
 	fmt.Println(string(jsonData))
+}
+
+func send_files() {
+	
 }
 
 func main() {
