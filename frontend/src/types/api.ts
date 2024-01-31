@@ -5,24 +5,24 @@ export interface RootObject {
   hits: Hits;
 }
 
-interface Shards {
+export interface Shards {
   total: number;
   successful: number;
   skipped: number;
   failed: number;
 }
 
-interface Hits {
+export interface Hits {
   total: Total;
   max_score: number;
   hits: Hit[];
 }
 
-interface Total {
+export interface Total {
   value: number;
 }
 
-interface Hit {
+export interface Hit {
   _index: string;
   _type: string;
   _id: string;
@@ -31,7 +31,7 @@ interface Hit {
   _source: Source;
 }
 
-interface Source {
+export interface Source {
   '@timestamp': string;
   Body: string;
   CC: string;

@@ -2,11 +2,14 @@
 import { ref, onMounted } from 'vue'
 import { instance } from '@/lib/axios'
 import { Input } from '@/components/ui/input'
-import type { RootObject } from '@/types/api'
+import type { RootObject, Source } from '@/types/api'
+import EmailDetail from '@/components/self/EmailDetail.vue'
+import EmailPreview from '@/components/self/EmailPreview.vue'
 
 const data = ref<RootObject | null>(null)
 const loading = ref(true)
 const error = ref()
+let mail = ref(<Source | null>null)
 
 async function fetchData() {
     loading.value = true
@@ -22,6 +25,11 @@ async function fetchData() {
     } finally {
         loading.value = false
     }
+}
+
+function selectEmail(id: string) {
+    mail.value = data.value?.hits.hits.find((email) => email._id === id)?._source
+    console.log(mail.value)
 }
 
 onMounted(fetchData)
@@ -81,53 +89,16 @@ onMounted(fetchData)
                     />
                 </div>
             </div>
-            <div className="flex">
+            <div className="flex relative">
                 <ul className="w-1/2 px-4 py-3 space-y-2">
-                    <li
-                        className="px-3 py-2 border rounded-md dark:border-gray-700 dark:bg-gray-800"
+                    <EmailPreview
                         v-for="email in data?.hits.hits"
                         v-bind:key="email._id"
-                    >
-                        <div className="flex justify-between items-center">
-                            <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-200">
-                                {{ email._source['X-From'] }}
-                            </h3>
-                            <span className="text-sm text-gray-600 dark:text-gray-400">{{
-                                email._source.Date
-                            }}</span>
-                        </div>
-                        <h2 className="mt-1 text-sm text-gray-800 dark:text-gray-200">
-                            {{ email._source.Subject }}
-                        </h2>
-                        <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                            {{ email._source.Body.substring(0, 100) }}...
-                        </p>
-                    </li>
+                        v-on:click="selectEmail(email._id)"
+                        v-bind:email="email._source"
+                    />
                 </ul>
-                <div className="w-1/2 px-4 py-3 border-l dark:border-gray-700 ">
-                    <div
-                        className="px-6 py-4 border rounded-md dark:border-gray-700 dark:bg-gray-800"
-                    >
-                        <div className="flex justify-between items-center">
-                            <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200">
-                                Meeting Reminder
-                            </h3>
-                            <span className="text-sm text-gray-600 dark:text-gray-400"
-                                >Jan 3, 2024</span
-                            >
-                        </div>
-                        <h2 className="mt-2 text-sm text-gray-800 dark:text-gray-200">
-                            From: John Doe
-                        </h2>
-                        <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">Dear Team,</p>
-                        <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-                            Don't forget about the meeting tomorrow at 10am. We will be discussing
-                            the progress of our current project and the plans for the next quarter.
-                        </p>
-                        <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">Best,</p>
-                        <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">John Doe</p>
-                    </div>
-                </div>
+                <EmailDetail v-bind:email="mail?.value" />
             </div>
         </main>
     </div>
