@@ -6,7 +6,11 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"sync"
+	"time"
 )
+
+var cache sync.Map
 
 func MakeAPIRequest() ([]byte, error) {
 	apiURL := "http://localhost:4080/api/enron/_search"
@@ -17,6 +21,11 @@ func MakeAPIRequest() ([]byte, error) {
     "max_results": 100,
     "_source": []
 }`
+
+	// Check if the response is already cached
+	if cachedResponse, ok := cache.Load(apiURL); ok {
+		return cachedResponse.([]byte), nil
+	}
 
 	// Create a new HTTP request
 	req, err := http.NewRequest("POST", apiURL, bytes.NewBuffer([]byte(body)))
@@ -47,6 +56,13 @@ func MakeAPIRequest() ([]byte, error) {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	// Cache the response with a 5-minute expiration
+	cache.Store(apiURL, responseBody)
+	go func() {
+		time.Sleep(5 * time.Minute)
+		cache.Delete(apiURL)
+	}()
 
 	return responseBody, nil
 }
