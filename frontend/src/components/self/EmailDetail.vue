@@ -4,7 +4,6 @@ import { type Source } from '@/types/api'
 const props = defineProps({
     email: { type: Object as () => Source }
 })
-console.log(props.email)
 </script>
 
 <template>
@@ -26,7 +25,7 @@ console.log(props.email)
             </h2>
             <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">Dear Team,</p>
             <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-                {{ email?.Body }}
+               <pre>{{ email?.Body }}</pre>
             </p>
             <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">John Doe</p>
         </div>

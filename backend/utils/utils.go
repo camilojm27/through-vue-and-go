@@ -3,31 +3,44 @@ package utils
 import (
 	"bytes"
 	"encoding/base64"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
-	"sync"
-	"time"
+	// "sync"
 )
 
-var cache sync.Map
+//var cache sync.Map
 
-func MakeAPIRequest() ([]byte, error) {
-	apiURL := "http://localhost:4080/api/enron/_search"
+func MakeAPIRequest(page string, search string) ([]byte, error) {
+	apiURL := "http://192.168.1.16:4080/api/enron/_search"
 	username := "admin"
 	password := "Complexpass#123"
-	body := `{
+	body := ""
+	if search == "" {
+		body = `{
     "search_type": "alldocuments",
-    "max_results": 100,
+    "from":%s,
+    "max_results": 20,
     "_source": []
+  }`
+		body = fmt.Sprintf(body, page)
+	} else {
+		body = `{
+    "search_type": "match",
+    "query": {
+        "term": "%s",
+        "field": "_all"
+    },
+    "max_results": 10000000,
+    "_source": [
+    ]
 }`
 
-	// Check if the response is already cached
-	if cachedResponse, ok := cache.Load(apiURL); ok {
-		return cachedResponse.([]byte), nil
+		body = fmt.Sprintf(body, search)
+
 	}
 
-	// Create a new HTTP request
 	req, err := http.NewRequest("POST", apiURL, bytes.NewBuffer([]byte(body)))
 	if err != nil {
 		log.Fatal(err)
@@ -44,6 +57,7 @@ func MakeAPIRequest() ([]byte, error) {
 
 	// Send the request
 	client := &http.Client{}
+	fmt.Println(req.Body)
 	resp, err := client.Do(req)
 	if err != nil {
 		log.Fatal(err)
@@ -57,12 +71,12 @@ func MakeAPIRequest() ([]byte, error) {
 		log.Fatal(err)
 	}
 
-	// Cache the response with a 5-minute expiration
-	cache.Store(apiURL, responseBody)
-	go func() {
-		time.Sleep(5 * time.Minute)
-		cache.Delete(apiURL)
-	}()
+	// // Cache the response with a 5-minute expiration
+	// cache.Store(apiURL, responseBody)
+	// go func() {
+	// 	time.Sleep(5 * time.Minute)
+	// 	cache.Delete(apiURL)
+	// }()
 
 	return responseBody, nil
 }

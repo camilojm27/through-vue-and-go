@@ -22,8 +22,8 @@ const redirectToEmail = (emailId: string) => {
         @click="redirectToEmail(email._id)"
     >
         <div className="flex justify-between items-center">
-            <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-200">
-                {{ email._source['X-From'] }}
+            <h3 className="text-sm text-gray-800 dark:text-gray-200">
+               From: <span class="font-semibold"> {{ email._source['From'] }} </span>
             </h3>
             <span className="text-sm text-gray-600 dark:text-gray-400">{{
                 email._source.Date

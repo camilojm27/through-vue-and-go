@@ -29,6 +29,6 @@ func main() {
 	r.Use(middleware.Logger)
 
 	r.Mount("/mail", routes.MailRouter())
-	fmt.Println("Ejecutando servidor")
+	fmt.Println("Ejecutando servidor 8080")
 	http.ListenAndServe(":8080", r)
 }
