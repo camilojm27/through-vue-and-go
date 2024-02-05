@@ -8,9 +8,10 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	_ "net/http/pprof"
 	"os"
 	"path/filepath"
-	S "strings"
+	"strings"
 )
 
 type Email struct {
@@ -33,63 +34,62 @@ type Email struct {
 	Body                    string `json:"Body"`
 }
 
-func explore_dir() {
+func exploreDir() {
 	dir, err := os.Getwd()
 	if err != nil {
 		fmt.Println("Error getting current working directory:", err)
 		return
 	}
 
-	//fmt.Println(dir)
-	err = filepath.Walk(dir+"/../enron_mail_20110402/maildir", func(path string, info os.FileInfo, err error) error {
+	err = filepath.Walk(filepath.Join(dir, "../enron_mail_20110402/maildir"), func(path string, info os.FileInfo, err error) error {
 		if err != nil {
-			return err
+			log.Println(err)
+			return nil
 		}
-		explore_file(path)
+		exploreFile(path)
 		return nil
 	})
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 }
 
-func explore_file(path string) {
-	email_headers := [15]string{"Message-ID:", "Date:", "From:", "To:", "Subject", "Mime-Version:", "Contente-Type:", "Content-Transfer-Encoding:", "X-From:", "X-To:", "X-cc:", "X-bcc:", "X-Folder:", "X-Origin:", "X-FileName:"}
-	temp := email_headers[:]
+func exploreFile(path string) {
+	emailHeaders := [...]string{"Message-ID:", "Date:", "From:", "To:", "Subject", "Mime-Version:", "Content-Type:", "Content-Transfer-Encoding:", "X-From:", "X-To:", "X-cc:", "X-bcc:", "X-Folder:", "X-Origin:", "X-FileName:"}
+	var bodyBuilder strings.Builder
+	var storeContent bool
+	headers := make(map[string]string, len(emailHeaders))
+
 	file, err := os.Open(path)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
+		return
 	}
 	defer file.Close()
 
 	scanner := bufio.NewScanner(file)
-	var body string
-	var storeContent bool
-	headers := make(map[string]string)
 
 	for scanner.Scan() {
 		line := scanner.Text()
-		for i, header := range email_headers {
-			if S.HasPrefix(line, header) {
-				//fmt.Println(line)
-				temp = append(temp[:i], temp[i+1:]...)
-				if S.HasPrefix(line, "X-FileName:") {
+		for _, header := range emailHeaders {
+			if strings.HasPrefix(line, header) {
+				headers[header] = line[len(header):]
+				if strings.HasPrefix(line, "X-FileName:") {
 					storeContent = true
 				}
-				headers[header] = line[len(header):]
 				break
 			}
 		}
-		if storeContent {
-			if !S.HasPrefix(line, "X-FileName:") {
-				body += line + "\n"
-			}
+		if storeContent && !strings.HasPrefix(line, "X-FileName:") {
+			bodyBuilder.WriteString(line)
+			bodyBuilder.WriteString("\n")
 		}
 	}
 
 	if err := scanner.Err(); err != nil {
-		fmt.Println(err)
+		log.Println(err)
+		return
 	}
 
 	email := Email{
@@ -109,59 +109,48 @@ func explore_file(path string) {
 		XFolder:                 headers["X-Folder:"],
 		XOrigin:                 headers["X-Origin:"],
 		XFileName:               headers["X-FileName:"],
-		Body:                    body,
+		Body:                    bodyBuilder.String(),
 	}
 
 	jsonData, err := json.Marshal(email)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return
 	}
 
-	//fmt.Println(string(jsonData))
-	send_files(jsonData)
+	sendFiles(jsonData)
 }
 
-func send_files(data []byte) {
-
-	apiURL := "http://localhost:4080/api/enron/_doc"
+func sendFiles(data []byte) {
+	apiURL := "http://localhost:4080/api/enron1/_doc"
 	username := "admin"
 	password := "Complexpass#123"
 
-	// Create a new HTTP request
 	req, err := http.NewRequest("POST", apiURL, bytes.NewBuffer(data))
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return
 	}
 
-	// Set the request headers
 	req.Header.Set("Content-Type", "application/json")
-
-	// Add Basic Authentication header
 	auth := username + ":" + password
 	basicAuth := "Basic " + base64.StdEncoding.EncodeToString([]byte(auth))
 	req.Header.Set("Authorization", basicAuth)
 
-	// Send the request
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return
 	}
-
 	defer resp.Body.Close()
-
-	// // Read the response body
-	// responseBody, err := ioutil.ReadAll(resp.Body)
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-
-	// // Process the response body
-	// fmt.Println(string(responseBody))
-
 }
 
 func main() {
-	explore_dir()
-	//explore_file("../enron_mail_20110402/maildir/brawner-s/all_documents/2.")
+	go func() {
+		log.Println(http.ListenAndServe("localhost:6060", nil))
+	}()
+
+	exploreDir()
+	//exploreFile("../enron_mail_20110402/maildir/brawner-s/all_documents/2.")
 }

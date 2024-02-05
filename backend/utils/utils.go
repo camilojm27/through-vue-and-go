@@ -32,7 +32,7 @@ func MakeAPIRequest(page string, search string) ([]byte, error) {
         "term": "%s",
         "field": "_all"
     },
-    "max_results": 10000000,
+    "max_results": 200,
     "_source": [
     ]
 }`

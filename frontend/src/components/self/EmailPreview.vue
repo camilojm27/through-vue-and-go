@@ -18,22 +18,25 @@ const redirectToEmail = (emailId: string) => {
     <li
         v-for="email in emails"
         v-bind:key="email._id"
-        className="px-3 py-2 border rounded-md dark:border-gray-700 dark:bg-gray-800"
+        class="px-3 py-2 border rounded-md dark:border-gray-700 dark:bg-gray-800 cursor-pointer hover:bg-black hover:bg-opacity-20"
         @click="redirectToEmail(email._id)"
     >
-        <div className="flex justify-between items-center">
-            <h3 className="text-sm text-gray-800 dark:text-gray-200">
+        <div class="flex justify-between items-center">
+            <h3 class="text-sm text-gray-800 dark:text-gray-200">
                From: <span class="font-semibold"> {{ email._source['From'] }} </span>
             </h3>
-            <span className="text-sm text-gray-600 dark:text-gray-400">{{
+            <span class="text-sm text-gray-600 dark:text-gray-400">{{
                 email._source.Date
             }}</span>
         </div>
-        <h2 className="mt-1 text-sm text-gray-800 dark:text-gray-200">
+      <h3 class="text-sm text-gray-800 dark:text-gray-200">
+        To: <span class="font-semibold"> {{ email._source['To'] }} </span>
+      </h3>
+        <h2 class="mt-1 text-sm text-gray-800 dark:text-gray-200">
             {{ email._source.Subject }}
         </h2>
-        <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-            {{ email._source.Body.substring(0, 100) }}...
+        <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+            {{ email._source.Body.substring(0, 150) }}...
         </p>
     </li>
 </template>

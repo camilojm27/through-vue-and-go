@@ -1,0 +1,45 @@
+{
+    "took": 80,
+    "timed_out": false,
+    "_shards": {
+        "total": 6,
+        "successful": 6,
+        "skipped": 0,
+        "failed": 0
+    },
+    "hits": {
+        "total": {
+            "value": 520924
+        },
+        "max_score": 1,
+        "hits": [
+            {
+                "_index": "enron",
+                "_type": "_doc",
+                "_id": "25nEQrOpHqh",
+                "_score": 1,
+                "@timestamp": "2024-01-28T03:39:14.63090432Z",
+                "_source": {
+                    "@timestamp": "2024-01-28T03:39:14.63090432Z",
+                    "Body": "\nMeant to copy you on this reply to Mike, but forgot to do so before my \ninitial send.  Here it is...\n---------------------- Forwarded by Sally Beck/HOU/ECT on 11/27/2000 02:09 PM \n---------------------------\n   \n\tEnron North America Corp.\n\t\n\tFrom:  Sally Beck                           11/27/2000 02:08 PM\n\t\n\nTo: Mike Jordan/LON/ECT@ECT\ncc:  \nSubject: Re: Cross calibration for Operations people globally  \n\nI have attached a listing of planned PRC meetings for Operations that will be \nheld in Houston.  There will be a number of pre-review meetings that will be \nheld over the next two weeks in preparation for an Energy Operations PRC \nmeeting to be held on Friday, December 8th.  The pre-meetings are necessary \ndue to the sheer size of the groups.  (In addition to the meetings detailed \nin this schedule, Brent's team in EGM is having pre-meetings as well.)  \n\nThe December 8th meeting will include all operations personnel from ENA, EGM \nand EIM.  We will review the results from the pre-review meetings for Senior \nSpecialists and below.  I have asked that the results from the pre-review \nmeetings mirror the \"preferred distribution\", which as you probably know \nsuggests that 15% of the population will not receive a bonus and should \ntherefore be in the bottom two categories.  Assuming that appropriate work \nhas been done at the pre-review meetings, this review on the 8th should not \nbe too lengthy.  We will take considerably more time as we review the \nmanagers, who will have been pre-ranked as well.  This will give us a good \njumping off point for the cross calibration discussions.  We will then review \nand rank the directors and senior directors.  We will also be discussing \nsuggested promotions during this meeting as well.  Finally, assuming that I \nstill have David Oxley and Wes Colwell captive and attentive, I will discuss \nmy suggested rankings for the three VP's who report to me.  (We will of \ncourse pare down the list of attendees as we move up the ladder on levels \nthat we are reviewing -- initial make up of the December 8th PRC is me and my \ndirect reports within ENA, Brent and his direct reports within EGM and Brenda \nHerod from EIM.)  I have also extended an invitation to Louise Kitchen to \nattend the December 8th meeting.  I do not know yet if she will attend.  \n\nDo you have some suggestions for cross-calibrating on a global basis this \nyear?  I think that next year we can put some plans in place early in the \nyear to help facilitate this.  Would you like to attend the meeting here in \nHouston on December 8th?  Is there a planned meeting in London that would \nmake sense for me to attend?  Let me know your thoughts.  \n\n   \n\n    -Sally  \n\n\n\nMike Jordan\n11/24/2000 04:28 AM\nTo: Sally Beck/HOU/ECT@ECT\ncc: Fernley Dyson/LON/ECT@ECT \nSubject: Cross calibration for Operations people globally\n\nSally\n\nI have been speaking to Cindy Horn ( works for Scott here in London ) about \nchecking ratings / promotions across the two groups in London ( EGM and EEL ) \nwhich raised concerns that this might duplicate some work done on cross \ncalibration done by yourself. Can I ask what are the plans?\n\n\n\n",
+                    "CC": "",
+                    "Content-Transfer-Encoding": " 7bit",
+                    "Content-Type": "",
+                    "Date": " Mon, 27 Nov 2000 06:09:00 -0800 (PST)",
+                    "From": " sally.beck@enron.com",
+                    "Message-Id": " \u003c31321511.1075855913811.JavaMail.evans@thyme\u003e",
+                    "Mime-Version": " 1.0",
+                    "Subject": ": Re: Cross calibration for Operations people globally",
+                    "To": " fernley.dyson@enron.com",
+                    "X-FileName": " sbeck.nsf",
+                    "X-Folder": " \\Sally_Beck_Dec2000\\Notes Folders\\'sent mail",
+                    "X-From": " Sally Beck",
+                    "X-Origin": " Beck-S",
+                    "X-To": " Fernley Dyson",
+                    "X-bcc": " ",
+                    "X-cc": " "
+                }
+            }
+        ]
+    }
+}
