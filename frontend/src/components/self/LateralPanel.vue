@@ -12,7 +12,7 @@
             class="flex justify-between items-center px-3 py-2 rounded-lg font-medium text-gray-700 dark:text-gray-200 bg-gray-200 dark:bg-gray-700"
             href="#"
           >
-            <span>{{$route.params.mail}}</span>
+            <span>Inbox</span>
             <span class="text-sm font-semibold text-gray-700 dark:text-gray-200"
             >120</span
             >

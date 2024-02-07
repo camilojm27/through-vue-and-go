@@ -9,6 +9,7 @@ import (
 func MailRouter() *chi.Mux {
 	router := chi.NewRouter()
 	router.Get("/all/{page}", handlers.GetMails)
+	router.Get("/detail/{id}", handlers.GetMail)
 	router.Post("/{param}", handlers.SearchMail)
 	return router
 }

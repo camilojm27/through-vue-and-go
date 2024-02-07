@@ -8,10 +8,10 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	_ "net/http/pprof"
 	"os"
 	"path/filepath"
 	"strings"
+	"sync"
 )
 
 type Email struct {
@@ -34,6 +34,12 @@ type Email struct {
 	Body                    string `json:"Body"`
 }
 
+// TODO: .env
+var wg sync.WaitGroup
+var apiURL = "http://localhost:4080/api/enron2/_doc"
+var username = "admin"
+var password = "Complexpass#123"
+
 func exploreDir() {
 	dir, err := os.Getwd()
 	if err != nil {
@@ -46,16 +52,21 @@ func exploreDir() {
 			log.Println(err)
 			return nil
 		}
-		exploreFile(path)
+		wg.Add(1)
+		go exploreFile(path)
 		return nil
 	})
 
 	if err != nil {
 		log.Println(err)
 	}
+
+	wg.Wait()
 }
 
 func exploreFile(path string) {
+	defer wg.Done()
+
 	emailHeaders := [...]string{"Message-ID:", "Date:", "From:", "To:", "Subject", "Mime-Version:", "Content-Type:", "Content-Transfer-Encoding:", "X-From:", "X-To:", "X-cc:", "X-bcc:", "X-Folder:", "X-Origin:", "X-FileName:"}
 	var bodyBuilder strings.Builder
 	var storeContent bool
@@ -122,10 +133,6 @@ func exploreFile(path string) {
 }
 
 func sendFiles(data []byte) {
-	apiURL := "http://localhost:4080/api/enron1/_doc"
-	username := "admin"
-	password := "Complexpass#123"
-
 	req, err := http.NewRequest("POST", apiURL, bytes.NewBuffer(data))
 	if err != nil {
 		log.Println(err)
@@ -147,10 +154,5 @@ func sendFiles(data []byte) {
 }
 
 func main() {
-	go func() {
-		log.Println(http.ListenAndServe("localhost:6060", nil))
-	}()
-
 	exploreDir()
-	//exploreFile("../enron_mail_20110402/maildir/brawner-s/all_documents/2.")
 }

@@ -12,20 +12,19 @@ import (
 
 //var cache sync.Map
 
-func MakeAPIRequest(page string, search string) ([]byte, error) {
-	apiURL := "http://192.168.1.16:4080/api/enron/_search"
+func MakeAPIRequest(page string, search string, docId string) ([]byte, error) {
+	apiURL := "http://192.168.1.16:4080/api/enron2/_search"
+	method := "POST"
 	username := "admin"
 	password := "Complexpass#123"
 	body := ""
-	if search == "" {
-		body = `{
-    "search_type": "alldocuments",
-    "from":%s,
-    "max_results": 20,
-    "_source": []
-  }`
-		body = fmt.Sprintf(body, page)
-	} else {
+
+	switch {
+	case docId != "":
+		apiURL = "http://192.168.1.16:4080/api/enron2/_doc/" + docId
+		method = "GET"
+	case search != "":
+
 		body = `{
     "search_type": "match",
     "query": {
@@ -36,12 +35,18 @@ func MakeAPIRequest(page string, search string) ([]byte, error) {
     "_source": [
     ]
 }`
-
 		body = fmt.Sprintf(body, search)
-
+	default:
+		body = `{
+    "search_type": "alldocuments",
+    "from":%s,
+    "max_results": 20,
+    "_source": []
+  }`
+		body = fmt.Sprintf(body, page)
 	}
 
-	req, err := http.NewRequest("POST", apiURL, bytes.NewBuffer([]byte(body)))
+	req, err := http.NewRequest(method, apiURL, bytes.NewBuffer([]byte(body)))
 	if err != nil {
 		log.Fatal(err)
 	}
