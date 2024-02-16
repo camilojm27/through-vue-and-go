@@ -8,8 +8,10 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	_ "net/http/pprof"
 	"os"
 	"path/filepath"
+	"runtime/pprof"
 	"strings"
 	"sync"
 )
@@ -154,5 +156,19 @@ func sendFiles(data []byte) {
 }
 
 func main() {
+	go func() {
+		log.Println(http.ListenAndServe("localhost:6060", nil))
+	}()
+
+	f, err := os.Create("cpu.prof")
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	defer f.Close()
+
+	pprof.StartCPUProfile(f)
+	defer pprof.StopCPUProfile()
+
 	exploreDir()
 }

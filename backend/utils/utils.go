@@ -7,21 +7,35 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"os"
+	"path/filepath"
+
+	"github.com/joho/godotenv"
 	// "sync"
 )
 
-//var cache sync.Map
+// var cache sync.Map
 
 func MakeAPIRequest(page string, search string, docId string) ([]byte, error) {
-	apiURL := "http://192.168.1.16:4080/api/enron2/_search"
+	err := godotenv.Load(filepath.Join(".", ".env"))
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
+	var username = os.Getenv("ZINCSEARCH_USERNAME")
+	var password = os.Getenv("ZINCSEARCH_PASSWORD")
+	var baseURL = os.Getenv("ZINCSEARCH")
+
+	apiURL := baseURL + "/api/enron/_search"
+
 	method := "POST"
-	username := "admin"
-	password := "Complexpass#123"
 	body := ""
+	fmt.Println(apiURL)
 
 	switch {
 	case docId != "":
-		apiURL = "http://192.168.1.16:4080/api/enron2/_doc/" + docId
+
+		apiURL = baseURL + "/api/enron/_doc/" + docId
 		method = "GET"
 	case search != "":
 
@@ -45,7 +59,7 @@ func MakeAPIRequest(page string, search string, docId string) ([]byte, error) {
   }`
 		body = fmt.Sprintf(body, page)
 	}
-
+	fmt.Print("body: ", body)
 	req, err := http.NewRequest(method, apiURL, bytes.NewBuffer([]byte(body)))
 	if err != nil {
 		log.Fatal(err)

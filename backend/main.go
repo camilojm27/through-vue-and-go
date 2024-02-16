@@ -2,16 +2,26 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
+	"os"
+	"path/filepath"
 
 	"github.com/camilojm27/through-vue-and-go/routes"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
+	"github.com/joho/godotenv"
 )
 
 func main() {
+	err := godotenv.Load(filepath.Join(".", ".env"))
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+	PORT := os.Getenv("API_PORT")
+
 	r := chi.NewRouter()
 	// Basic CORS
 	// for more ideas, see: https://developer.github.com/v3/#cross-origin-resource-sharing
@@ -29,6 +39,6 @@ func main() {
 	r.Use(middleware.Logger)
 
 	r.Mount("/mail", routes.MailRouter())
-	fmt.Println("Ejecutando servidor 8080")
-	http.ListenAndServe(":8080", r)
+	fmt.Println("Ejecutando servidor en el puerto " + PORT)
+	http.ListenAndServe(":"+PORT, r)
 }
