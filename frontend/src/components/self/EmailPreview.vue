@@ -5,7 +5,7 @@ const router = useRouter()
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const props = defineProps({
-    emails: { type: Object as () => Hit, required: true }
+    emails: { type: Object as () => Hit[], required: true }
 })
 
 const redirectToEmail = (emailId: string) => {

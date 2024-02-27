@@ -14,7 +14,7 @@ import LateralPanel from '@/components/self/LateralPanel.vue'
 const data = ref<RootObject | null>(null)
 const loading = ref(true)
 const error = ref('')
-let mail = ref<Source | null>(null)
+let mail = ref<Source>()
 const searchFilter = ref('')
 let page = 0
 const route = useRoute()
@@ -35,7 +35,7 @@ async function fetchData() {
 
     }
 
-  } catch (e) {
+  } catch (e: any) {
     error.value = e.toString()
   } finally {
     loading.value = false
@@ -58,7 +58,7 @@ async function fetchMail() {
     mail.value = response.data._source
     console.log(mail.value);
     
-  } catch (e) {
+  } catch (e: any) {
     error.value = e.toString()
   } finally {
     loading.value = false
@@ -74,7 +74,7 @@ async function searchData() {
       throw new Error(`HTTP error! status: ${response.status}`)
     }
     data.value = response.data
-  } catch (e) {
+  } catch (e: any) {
     error.value = e.toString()
   } finally {
     loading.value = false
@@ -91,7 +91,6 @@ function handleClic() {
   mail.value = data.value?.hits.hits.find((el) => {
     return el._id === route.params.mailID[0]
   })?._source
-  console.log(mail.value)
 }
 
 onMounted(() => {

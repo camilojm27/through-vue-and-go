@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { type Source } from '@/types/api'
 import { Badge } from '@/components/ui/badge'
-import { onMounted, onUpdated, ref } from 'vue'
 
 const props = defineProps({
     email: { type: Object as () => Source }
