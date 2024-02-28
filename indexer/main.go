@@ -38,7 +38,7 @@ type Email struct {
 
 // TODO: .env
 var wg sync.WaitGroup
-var apiURL = "http://localhost:4080/api/enron2/_doc"
+var apiURL = "http://localhost:4080/api/enron/_doc"
 var username = "admin"
 var password = "Complexpass#123"
 
